@@ -30,7 +30,7 @@ public class VitalSignsSectionBuilder extends SectionBuilderImpl {
 	@Override
 	public Section generate(Entry... entries) {
 		Section retVal = super.generate(entries);
-		retVal.setTemplateId(LIST.createLIST(new II(XdsSenderConstants.SCT_TEMPLATE_CCD_VITAL_SIGNS), new II(
+		retVal.setTemplateId(LIST.createLIST(new II(XdsSenderConstants.SCT_TEMPLATE_CODED_VITAL_SIGNS), new II(
 		        XdsSenderConstants.SCT_TEMPLATE_VITAL_SIGNS)));
 		retVal.setTitle("Vital Signs");
 		retVal.setCode(new CE<String>("8716-3", XdsSenderConstants.CODE_SYSTEM_LOINC,
@@ -43,7 +43,7 @@ public class VitalSignsSectionBuilder extends SectionBuilderImpl {
 	 */
 	public Section generate(Obs systolicBpObs, Obs diastolicBpObs, Obs weightObs, Obs heightObs, Obs temperatureObs) {
 		Entry vitalSignsBattery = new Entry(x_ActRelationshipEntry.HasComponent, BL.TRUE, batteryBuilder.generate(
-		    systolicBpObs, diastolicBpObs, weightObs, heightObs, temperatureObs));
+				systolicBpObs, diastolicBpObs, weightObs, heightObs, temperatureObs));
 		return this.generate(vitalSignsBattery);
 	}
 }

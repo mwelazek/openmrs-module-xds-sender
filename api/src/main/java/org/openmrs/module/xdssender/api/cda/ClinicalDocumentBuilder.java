@@ -12,6 +12,7 @@ import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.xdssender.XdsSenderConstants;
 import org.openmrs.module.xdssender.api.cda.model.DocumentModel;
+import org.openmrs.module.xdssender.api.cda.obs.ExtendedObs;
 import org.openmrs.module.xdssender.api.cda.section.impl.ActiveProblemsSectionBuilder;
 import org.openmrs.module.xdssender.api.cda.section.impl.AntepartumFlowsheetPanelSectionBuilder;
 import org.openmrs.module.xdssender.api.cda.section.impl.EstimatedDeliveryDateSectionBuilder;
@@ -59,6 +60,30 @@ public class ClinicalDocumentBuilder {
 		
 		Obs estimatedDeliveryDateObs = null, lastMenstrualPeriodObs = null, prepregnancyWeightObs = null, gestgationalAgeObs = null, fundalHeightObs = null, systolicBpObs = null, diastolicBpObs = null, weightObs = null, heightObs = null, presentationObs = null, temperatureObs = null;
 		List<Obs> medicationObs = new ArrayList<Obs>();
+
+		log.info("DISPLAYING OBS INSIDE THE ENCOUNTER --- TEBOHO KOMA");
+		for (Obs obs : encounter.getObs()) {
+			log.info(obs.getConcept().getName());
+
+			if (obs.getConcept().getName().toString().equalsIgnoreCase("WEIGHT")) {
+				weightObs = new Obs();
+				weightObs = obs;
+			} else if (obs.getConcept().getName().toString().equalsIgnoreCase("HEIGHT")) {
+				heightObs = new Obs();
+				heightObs = obs;
+			} else if (obs.getConcept().getName().toString().equalsIgnoreCase("Temperature")) {
+				temperatureObs = new Obs();
+				temperatureObs = obs;
+			} else if (obs.getConcept().getName().toString().equalsIgnoreCase("Systolic")) {
+				systolicBpObs = new Obs();
+				systolicBpObs = obs;
+			} else if (obs.getConcept().getName().toString().equalsIgnoreCase("Diastolic")) {
+				diastolicBpObs = new Obs();
+				diastolicBpObs = obs;
+			}
+		}
+		log.info("DONE DISPLAYING OBS INSIDE THE ENCOUNTER -- TEBOHO KOMA");
+
 		
 		// Obs relevant to this encounter
 		Collection<Obs> relevantObs = null;
@@ -89,8 +114,8 @@ public class ClinicalDocumentBuilder {
 		        && temperatureObs != null)
 			vitalSignsSection = vitalSignsSectionBuilder.generate(systolicBpObs, diastolicBpObs, weightObs, heightObs,
 			    temperatureObs);
-		
-		medicationsSection = medSectionBuilder.generate(medicationObs.toArray(new Obs[] {}));
+
+		//medicationsSection = medSectionBuilder.generate(medicationObs.toArray(new Obs[] {}));
 
 
 		Location visitLocation = Context.getLocationService().getDefaultLocation();;
@@ -107,7 +132,7 @@ public class ClinicalDocumentBuilder {
 			formatter.graph(baos, doc);
 
 			return DocumentModel.createInstance(baos.toByteArray(), builder.getTypeCode(),
-					XdsSenderConstants.CODE_SYSTEM_NAME_LOINC, builder.getFormatCode(), doc);
+					XdsSenderConstants.CODE_SYSTEM_LOINC, builder.getFormatCode(), doc);
 		} catch (Exception e) {
 			log.error("Error generating document:", e);
 			throw new RuntimeException(e);

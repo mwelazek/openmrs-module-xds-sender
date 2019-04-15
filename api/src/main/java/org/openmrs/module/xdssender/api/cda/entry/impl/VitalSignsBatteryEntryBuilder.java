@@ -14,6 +14,7 @@ import org.openmrs.BaseOpenmrsData;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.module.xdssender.XdsSenderConstants;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -25,7 +26,10 @@ import java.util.Arrays;
  */
 @Component("xdssender.VitalSignsBatteryEntryBuilder")
 public class VitalSignsBatteryEntryBuilder extends EntryBuilderImpl {
-	
+
+	@Autowired
+	private SimpleObservationEntryBuilder obsBuilder;
+
 	/**
 	 * Generate the clincal statement from an encounter
 	 */
@@ -52,7 +56,7 @@ public class VitalSignsBatteryEntryBuilder extends EntryBuilderImpl {
 		        XdsSenderConstants.CODE_SYSTEM_SNOMED, "SNOMED CT", null, "Vital Signs", null), new II(getConfiguration()
 		        .getEncounterRoot(), batteryEnc.getId().toString()), ActStatus.Completed, batteryEnc.getEncounterDatetime());
 		
-		SimpleObservationEntryBuilder obsBuilder = new SimpleObservationEntryBuilder();
+		//SimpleObservationEntryBuilder obsBuilder = new SimpleObservationEntryBuilder();
 		
 		batteryOrganizer.getComponent().add(
 		    new Component4(ActRelationshipHasComponent.HasComponent, BL.TRUE, obsBuilder.generate(new CD<String>("8480-6",
